@@ -32,12 +32,53 @@ app.get('/administracion', (req, res) =>{
     res.render('administracion')
 })
 
+app.get('/consulta1', (req, res) =>{
+    res.render ('consulta1')
+})
 
 ////////    CONSULTAS ////////////////////
 
 
-app.get('/consulta1', (req, res) =>{
-    res.render('consulta1')
+app.get('/consulta1/resultados', async (req, res) =>{
+    const { nombreMedico } = req.query;
+
+    if (!nombreMedico) {
+        return res.status(400).json({ error: 'Debe proporcionar el nombre del médico' });
+    }
+
+    try {
+        const query = `
+            SELECT 
+                Cita_Medica.ID_Cita,
+                Paciente.Nombre AS Nombre_Paciente,
+                Cita_Medica.Motivo,
+                Cita_Medica.Fecha,
+                Cita_Medica.Hora
+            FROM 
+                Cita_Medica
+            JOIN 
+                Paciente_Cita ON Cita_Medica.ID_Cita = Paciente_Cita.ID_Cita
+            JOIN 
+                Paciente ON Paciente_Cita.ID_Paciente = Paciente.ID_Paciente
+            JOIN 
+                Personal_Departamento ON Personal_Departamento.ID_Departamento = Cita_Medica.ID_Departamento
+            JOIN 
+                Personal_Medico ON Personal_Departamento.ID_Personal = Personal_Medico.ID_Personal
+            WHERE 
+                Personal_Medico.Nombre = $1
+                AND Cita_Medica.Fecha BETWEEN CURRENT_DATE AND CURRENT_DATE + INTERVAL '7 days'
+                AND Cita_Medica.Estado = 'Programada'
+            ORDER BY 
+                Cita_Medica.Fecha, Cita_Medica.Hora;
+        `;
+
+        const citas = await sql(query, [nombreMedico]);
+
+        res.json({ citas });
+    } catch (error) {
+        console.error('Error al obtener las citas:', error);
+        res.status(500).json({ error: 'Error al obtener las citas' });
+    }
 })
 
 

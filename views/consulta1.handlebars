@@ -1,7 +1,12 @@
 <main>
     <h2 class="Titulos-categorias"> Todos los resultados </h2>
 
+    <form action="/consulta1" method="GET">
+        <label for="nombreMedico">Nombre del Médico:</label>
+        <input type="text" id="nombreMedico" name="nombreMedico" placeholder="Ingrese el nombre del médico" required>
 
+        <button type="submit">Consultar Citas</button>
+    </form>
 
     <div class="container mt-4">
         <div class="row">
@@ -12,6 +17,36 @@
 
         </div>
     </div>
+
+
+    <h1>Citas Programadas</h1>
+
+    {{#if citas.length}}
+        <table>
+            <thead>
+                <tr>
+                    <th>Nombre del Paciente</th>
+                    <th>Motivo de la Consulta</th>
+                    <th>Fecha</th>
+                    <th>Hora</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each citas}}
+                    <tr>
+                        <td>{{this.nombrePaciente}}</td>
+                        <td>{{this.motivo}}</td>
+                        <td>{{this.fecha}}</td>
+                        <td>{{this.hora}}</td>
+                    </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    {{else}}
+        <p>No se encontraron citas programadas para el médico indicado.</p>
+    {{/if}}
+
+    <a href="/consulta1">Realizar otra consulta</a>
 
 
 </main>
