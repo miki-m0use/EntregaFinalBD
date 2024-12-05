@@ -1,0 +1,377 @@
+
+        <header class="header-mobile">
+            <h1 class="logo">
+                <a href="/" style="text-decoration: none; color: inherit;">ShopiBooKs</a>
+            </h1>
+
+            <button class="open-menu" id="open-menu"><i class="bi bi-list"></i></button>
+
+        </header>
+
+        <!-- Main Content -->
+        <main>
+            <h1 class="Titulos-categorias">Gestión de Productos</h1>
+
+            <!-- Agregar Producto -->
+            <section class="my-5">
+                <h2>Productos Existentes <a href="/dataProductos"> -> base de datos </a> </h2>
+                <h2>Ingreso de Personal Medico </h2>
+                
+                <form id="crearProductoForm" class="row g-3" action="/PersonalMedico"  method="POST">
+                        <div class="col-md-6">
+                            <label for="nombrePM" class="form-label">Nombre del Personal Medico </label>
+                            <input type="text" class="form-control" id="nombrePM" name="nombrePM" placeholder="Nombre">   
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="rutPM" class="form-label">RUT</label>
+                            <input type="text" class="form-control" id="rutPM" name="rutPM" placeholder="RUT">
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="contactoPM" class="form-label"> Contacto </label>
+                            <input type="text" class="form-control" id="contactoPM" name="contactoPM" placeholder="Numero de contacto">
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label for="direccionPM" class="form-label">Direccion</label>
+                            <input type="text" class="form-control" id="direccionPM" name="direccionPM" placeholder="direccion del usuario">
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="numeroDeLicencia" class="form-label"> Numero de licencia</label>
+                            <input type="text" class="form-control" id="numeroDeLicencia" name="numeroDeLicencia" placeholder="Numero de licencia del usuario">
+                        </div>
+
+
+                        <div class="col-md-6">
+                            <label for="numeroDeLicencia" class="form-label"> Especialidad </label>
+                            <select id="numeroDeLicencia" name="numeroDeLicencia">
+                                <option value="enfermero"> Enfermero </option>
+                                <option value="cirujano"> Cirujano </option>
+                                <option value="pediatra"> Pediatra </option>
+                                <option value="general"> General </option>
+                            </select>
+                            
+                        </div>
+        
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-primary">Agregar Producto</button>
+                        </div>
+                </form>
+
+                <br>
+
+                <h2> Ingreso de Pacientes nuevos </h2>
+
+                <form id="crearProductoForm" class="row g-3" action="/IngresoPacientes"  method="POST">
+                        <div class="col-md-6">
+                            <label for="nombrePM" class="form-label">Nombre del Personal Medico </label>
+                            <input type="text" class="form-control" id="nombrePM" name="nombrePM" placeholder="Nombre">   
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="rutPM" class="form-label">RUT</label>
+                            <input type="text" class="form-control" id="rutPM" name="rutPM" placeholder="RUT">
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="contactoPM" class="form-label"> Contacto </label>
+                            <input type="text" class="form-control" id="contactoPM" name="contactoPM" placeholder="Numero de contacto">
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label for="direccionPM" class="form-label">Direccion</label>
+                            <input type="text" class="form-control" id="direccionPM" name="direccionPM" placeholder="direccion del usuario">
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="numeroDeLicencia" class="form-label"> Numero de licencia</label>
+                            <input type="text" class="form-control" id="numeroDeLicencia" name="numeroDeLicencia" placeholder="Numero de licencia del usuario">
+                        </div>
+
+
+                        <div class="col-md-6">
+                            <label for="numeroDeLicencia" class="form-label"> Especialidad </label>
+                            <select id="numeroDeLicencia" name="numeroDeLicencia">
+                                <option value="enfermero"> Enfermero </option>
+                                <option value="cirujano"> Cirujano </option>
+                                <option value="pediatra"> Pediatra </option>
+                                <option value="general"> General </option>
+                            </select>
+                            
+                        </div>
+        
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-primary">Agregar Producto</button>
+                        </div>
+                </form>
+
+
+
+
+                <form id="crearProductoForm" class="row g-3" action="/PersonalMedico"  method="POST">
+                        <div class="col-md-6">
+                            <label for="nombrePM" class="form-label">Nombre del Personal Medico </label>
+                            <input type="text" class="form-control" id="nombrePM" name="nombrePM" placeholder="Nombre">   
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="rutPM" class="form-label">RUT</label>
+                            <input type="text" class="form-control" id="rutPM" name="rutPM" placeholder="RUT">
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="contactoPM" class="form-label"> Contacto </label>
+                            <input type="text" class="form-control" id="contactoPM" name="contactoPM" placeholder="Numero de contacto">
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label for="direccionPM" class="form-label">Direccion</label>
+                            <input type="text" class="form-control" id="direccionPM" name="direccionPM" placeholder="direccion del usuario">
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="numeroDeLicencia" class="form-label"> Numero de licencia</label>
+                            <input type="text" class="form-control" id="numeroDeLicencia" name="numeroDeLicencia" placeholder="Numero de licencia del usuario">
+                        </div>
+
+
+                        <div class="col-md-6">
+                            <label for="numeroDeLicencia" class="form-label"> Especialidad </label>
+                            <select id="numeroDeLicencia" name="numeroDeLicencia">
+                                <option value="enfermero"> Enfermero </option>
+                                <option value="cirujano"> Cirujano </option>
+                                <option value="pediatra"> Pediatra </option>
+                                <option value="general"> General </option>
+                            </select>
+                            
+                        </div>
+        
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-primary">Agregar Producto</button>
+                        </div>
+                </form>
+
+
+                <form id="crearProductoForm" class="row g-3" action="/PersonalMedico"  method="POST">
+                        <div class="col-md-6">
+                            <label for="nombrePM" class="form-label">Nombre del Personal Medico </label>
+                            <input type="text" class="form-control" id="nombrePM" name="nombrePM" placeholder="Nombre">   
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="rutPM" class="form-label">RUT</label>
+                            <input type="text" class="form-control" id="rutPM" name="rutPM" placeholder="RUT">
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="contactoPM" class="form-label"> Contacto </label>
+                            <input type="text" class="form-control" id="contactoPM" name="contactoPM" placeholder="Numero de contacto">
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label for="direccionPM" class="form-label">Direccion</label>
+                            <input type="text" class="form-control" id="direccionPM" name="direccionPM" placeholder="direccion del usuario">
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="numeroDeLicencia" class="form-label"> Numero de licencia</label>
+                            <input type="text" class="form-control" id="numeroDeLicencia" name="numeroDeLicencia" placeholder="Numero de licencia del usuario">
+                        </div>
+
+
+                        <div class="col-md-6">
+                            <label for="numeroDeLicencia" class="form-label"> Especialidad </label>
+                            <select id="numeroDeLicencia" name="numeroDeLicencia">
+                                <option value="enfermero"> Enfermero </option>
+                                <option value="cirujano"> Cirujano </option>
+                                <option value="pediatra"> Pediatra </option>
+                                <option value="general"> General </option>
+                            </select>
+                            
+                        </div>
+        
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-primary">Agregar Producto</button>
+                        </div>
+                </form>
+
+
+
+
+                <form id="crearProductoForm" class="row g-3" action="/PersonalMedico"  method="POST">
+                        <div class="col-md-6">
+                            <label for="nombrePM" class="form-label">Nombre del Personal Medico </label>
+                            <input type="text" class="form-control" id="nombrePM" name="nombrePM" placeholder="Nombre">   
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="rutPM" class="form-label">RUT</label>
+                            <input type="text" class="form-control" id="rutPM" name="rutPM" placeholder="RUT">
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="contactoPM" class="form-label"> Contacto </label>
+                            <input type="text" class="form-control" id="contactoPM" name="contactoPM" placeholder="Numero de contacto">
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label for="direccionPM" class="form-label">Direccion</label>
+                            <input type="text" class="form-control" id="direccionPM" name="direccionPM" placeholder="direccion del usuario">
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="numeroDeLicencia" class="form-label"> Numero de licencia</label>
+                            <input type="text" class="form-control" id="numeroDeLicencia" name="numeroDeLicencia" placeholder="Numero de licencia del usuario">
+                        </div>
+
+
+                        <div class="col-md-6">
+                            <label for="numeroDeLicencia" class="form-label"> Especialidad </label>
+                            <select id="numeroDeLicencia" name="numeroDeLicencia">
+                                <option value="enfermero"> Enfermero </option>
+                                <option value="cirujano"> Cirujano </option>
+                                <option value="pediatra"> Pediatra </option>
+                                <option value="general"> General </option>
+                            </select>
+                            
+                        </div>
+        
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-primary">Agregar Producto</button>
+                        </div>
+                </form>
+
+
+
+
+                <form id="crearProductoForm" class="row g-3" action="/PersonalMedico"  method="POST">
+                        <div class="col-md-6">
+                            <label for="nombreNS" class="form-label">Nombre del Personal NO area de la salud</label>
+                            <input type="text" class="form-control" id="nombreNS" name="nombreNS" placeholder="Nombre">   
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="rutNS" class="form-label">RUT</label>
+                            <input type="text" class="form-control" id="contactoNS" name="contactoNS" placeholder="RUT">
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="contactoNS" class="form-label"> Contacto </label>
+                            <input type="text" class="form-control" id="contactoNS" name="contactoNS" placeholder="Numero de contacto">
+                        </div>
+                        
+                
+                        <div class="col-md-6">
+                            <label for="direccionNS" class="form-label"> Direccion </label>
+                            <input type="text" class="form-control" id="direccionNS" name="direccionNS" placeholder="direccion del usuario">
+                        </div>
+
+
+                        <div class="col-md-6">
+                            <label for="cargoFuncion" class="form-label"> Especialidad </label>
+                            <select id="cargoFuncion" name="cargoFuncion">
+                                <option value="limpieza"> Limpieza </option>
+                                <option value="electricista"> Electricista </option>
+                                <option value="secretaria"> Secretaria </option>
+                                <option value="seguridad"> Seguridad </option>
+                            </select>
+                            
+                        </div>
+        
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-primary">Agregar Producto</button>
+                        </div>
+                </form>
+
+
+
+
+
+
+
+
+
+
+
+
+            </section>
+
+            <!-- Editar/Eliminar Productos -->
+            <section class="my-5">
+                
+                <div class="contenedor-productos"> 
+                    <!-- caja de prodcutos -->
+                    {{#each lista}}
+                    <div class="card-producto-body">
+                        
+                            <div>
+                                <p> ID: {{this.id}} </p>
+                                <p> Nombre del Producto: {{this.titulo}} </p>
+                                <p> Autor del Producto: {{this.autor}} </p>
+                                <p> Precio del Producto: ${{this.precio}} </p>
+                                <p> Stock del producto: {{this.stock}} </p>
+                                <p> URL de la Imagen: <img src="{{this.urlimagen}}"> </p>
+
+                                <br>
+
+                                <button 
+                                    type="button" 
+                                    class="btn btn-warning" 
+                                    data-id="{{id}}" 
+                                    data-titulo="{{titulo}}" 
+                                    data-autor="{{autor}}" 
+                                    data-precio="{{precio}}" 
+                                    data-urlimagen="{{urlimagen}}" 
+                                    data-stock="{{stock}}"
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#editarProductoModal">
+                                    Editar
+                                </button>
+
+
+                                <button class="btn btn-danger">Eliminar</button>
+                            </div>
+                        
+
+                    </div>
+                {{/each}}
+
+
+                    <!-- aqui pueden ir mas procutos pero no salir del div de abajo-->
+                </div>
+            </section>
+        </main>
+
+
+
+
+            <!-- Modulo para la edicion de prodcutos, directo a la base de datos -->
+    <div class="modal fade" id="editarProductoModal" tabindex="-1" aria-labelledby="editarProductoLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editarProductoLabel">Editar Producto</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body">
+
+                    <form id="editarProductoForm" action="/productos/editar/{{this.id}}" method="POST">
+                        <input type="hidden"  name="_method" value="PUT"> <!-- Usar un campo oculto para indicar el método -->
+                        <input type="text" id="editarNombreProducto" name="nombreProducto" value="{{this.titulo}}" placeholder="Nombre del Producto" required>
+                        <input type="text" id="editarAutorProducto" name="autorProducto" value="{{this.autor}}" placeholder="Autor" required>
+                        <input type="number" id="editarPrecioProducto" name="precioProducto" value="{{this.precio}}" placeholder="Precio" required>
+                        <input type="text" id="editarImagenProducto" name="imagenProducto" placeholder="URL de la Imagen" required>
+                        <input type="number"  id="editarStockProducto" name="stockProducto" value="{{this.stock}}" placeholder="Stock" required>
+                        <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                    </form>
+
+                </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
