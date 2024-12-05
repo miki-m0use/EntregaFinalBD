@@ -9,7 +9,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 
-const sql = neon('postgresql://neondb_owner:Wq8csb3lfxDI@ep-crimson-pine-a56j6l3g.us-east-2.aws.neon.tech/neondb?sslmode=require');
+const sql = neon('postgresql://neondb_owner:uhkKjfFP62Ms@ep-shy-mode-a57v4e26.us-east-2.aws.neon.tech/neondb?sslmode=require');
 
 const app = express();
 
