@@ -1,19 +1,33 @@
 <main>
     <h2 class="Titulos-categorias"> Todos los resultados </h2>
 
+<h1>Equipos Médicos que requieren mantenimiento o están fuera de servicio</h1>
 
+    {{#if error}}
+        <p style="color: red;">{{error}}</p>
+    {{/if}}
 
-    <div class="container mt-4">
-        <div class="row">
-            
-
-
-
-
-
-
-        </div>
-    </div>
+    {{#if equipos}}
+        <table>
+            <thead>
+                <tr>
+                    <th>Nombre del Equipo</th>
+                    <th>Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each equipos}}
+                    <tr>
+                        <td>{{this.tipo}}</td>
+                        <td>{{this.estado}}</td>
+                        
+                    </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    {{else}}
+        <p>No se encontraron equipos médicos que requieran mantenimiento o estén fuera de servicio.</p>
+    {{/if}}
 
 
 </main>

@@ -9,13 +9,14 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 
-const sql = neon('postgresql://neondb_owner:uhkKjfFP62Ms@ep-shy-mode-a57v4e26.us-east-2.aws.neon.tech/neondb?sslmode=require');
+const sql = neon('postgresql://neondb_owner:TWQn1tsowjC4@ep-patient-art-a4tlr8sa.us-east-1.aws.neon.tech/neondb?sslmode=require');
 
 const app = express();
 
 //////      middlewares      /////
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+
 
 app.engine('handlebars', engine());
 app.set('view engine', 'handlebars');
@@ -32,114 +33,364 @@ app.get('/administracion', (req, res) =>{
     res.render('administracion')
 })
 
-app.get('/consulta1', (req, res) =>{
-    res.render ('consulta1')
-})
 
 ////////    CONSULTAS ////////////////////
 
 
-app.get('/consulta1/resultados', async (req, res) =>{
-    const { nombreMedico } = req.query;
+app.get('/consulta1', async (req, res) => {
+    const { idMedico } = req.query;
 
-    if (!nombreMedico) {
-        return res.status(400).json({ error: 'Debe proporcionar el nombre del médico' });
+    // Verificar si el idMedico fue proporcionado
+    if (!idMedico) {
+        return res.render('consulta1', { error: 'Debe proporcionar el id del médico' });
+    }
+
+    try {
+        // Consultar citas programadas para el médico en la próxima semana
+        const query = `
+            SELECT 
+    cita_medica.Fecha,
+    cita_medica.Hora,
+    Paciente.Nombre AS Nombre_Paciente,
+    cita_medica.Motivo
+FROM 
+    cita_medica
+JOIN 
+    Paciente ON cita_medica.ID_Paciente = Paciente.ID_Paciente
+WHERE 
+    cita_medica.ID_Personal = $1
+    AND cita_medica.Fecha BETWEEN CURRENT_DATE AND CURRENT_DATE + INTERVAL '7 days'
+    AND cita_medica.Estado = 'Programada'
+ORDER BY 
+    cita_medica.Fecha, cita_medica.Hora;
+
+        `;
+
+        // Ejecutar la consulta SQL
+        const citas = await sql(query, [idMedico]);
+
+        // Enviar los resultados a la vista (consulta1)
+        res.render('consulta1', { citas, idMedico });
+
+    } catch (error) {
+        console.error('Error al obtener las citas:', error);
+        res.render('consulta1', { error: 'Ocurrió un error al obtener las citas programadas', idMedico });
+    }
+});
+
+
+
+
+
+
+app.get('/consulta2', async (req, res) => {
+    const { idPaciente } = req.query;
+
+    if (!idPaciente) {
+        return res.render('consulta2', { error: 'Debe proporcionar un ID de paciente.' });
     }
 
     try {
         const query = `
             SELECT 
-                Cita_Medica.ID_Cita,
-                Paciente.Nombre AS Nombre_Paciente,
-                Cita_Medica.Motivo,
-                Cita_Medica.Fecha,
-                Cita_Medica.Hora
+                Historial_Medico.Fecha,
+                Historial_Medico.Diagnostico,
+                Historial_Medico.Tratamiento
             FROM 
-                Cita_Medica
-            JOIN 
-                Paciente_Cita ON Cita_Medica.ID_Cita = Paciente_Cita.ID_Cita
-            JOIN 
-                Paciente ON Paciente_Cita.ID_Paciente = Paciente.ID_Paciente
-            JOIN 
-                Personal_Departamento ON Personal_Departamento.ID_Departamento = Cita_Medica.ID_Departamento
-            JOIN 
-                Personal_Medico ON Personal_Departamento.ID_Personal = Personal_Medico.ID_Personal
+                Historial_Medico
             WHERE 
-                Personal_Medico.Nombre = $1
-                AND Cita_Medica.Fecha BETWEEN CURRENT_DATE AND CURRENT_DATE + INTERVAL '7 days'
-                AND Cita_Medica.Estado = 'Programada'
-            ORDER BY 
-                Cita_Medica.Fecha, Cita_Medica.Hora;
+                Historial_Medico.ID_Paciente = $1;
         `;
 
-        const citas = await sql(query, [nombreMedico]);
+        const historial = await sql(query, [idPaciente]);
 
-        res.json({ citas });
+        res.render('consulta2', {historial});
     } catch (error) {
-        console.error('Error al obtener las citas:', error);
-        res.status(500).json({ error: 'Error al obtener las citas' });
+        console.error('Error al obtener el historial médico:', error);
+        res.render('consulta2', { error: 'Ocurrió un error al obtener el historial médico.' });
     }
-})
+});
 
 
-app.get('/consulta2', (req, res) =>{
-    res.render('consulta2')
-})
+app.get('/consulta3', async (req, res) => {
+    try {
+        const query = `
+            SELECT 
+                Nombre_Producto,
+                Cantidad,
+                Fecha_Caducidad
+            FROM 
+                Inventario_Medico
+            WHERE 
+                Cantidad <= 10000  -- este valor según lo podemos cambiar a lo que consideremos bajo stock
+                AND Fecha_Caducidad <= CURRENT_DATE + INTERVAL '30 days'  --  los próximos 30 días de caducidad
+            ORDER BY 
+                Cantidad ASC, Fecha_Caducidad;
+        `;
 
+        const productos = await sql(query);
 
-app.get('/consulta3', (req, res) =>{
-    res.render('consulta3')
-})
-
-
-
-app.get('/consulta4', (req, res) =>{
-    res.render('consulta4')
-})
-
-
-
-app.get('/consulta5', (req, res) =>{
-    res.render('consulta5')
-})
-
-
-
-app.get('/consulta6', (req, res) =>{
-    res.render('consulta6')
-})
-
-
-
-app.get('/consulta7', (req, res) =>{
-    res.render('consulta7')
-})
+        // Renderiza la vista 'consulta_inventario' con los productos encontrados
+        res.render('consulta3', { productos });
+    } catch (error) {
+        console.error('Error al obtener los productos del inventario:', error);
+        res.render('consulta3', { error: 'Ocurrió un error al obtener los productos del inventario.' });
+    }
+});
 
 
 
 
-app.get('/consulta8', (req, res) =>{
-    res.render('consulta8')
-})
+app.get('/consulta4', async (req, res) => {
+    try {
+        const query = `
+            SELECT 
+                tipo,
+                estado
+            FROM 
+                equipo_medico
+            WHERE 
+                Estado IN ('En mantenimiento', 'En uso')  -- Equipos en mantenimiento o fuera de servicio porque estan en uso
+            ORDER BY 
+                tipo;
+        `;
+
+        const equipos = await sql(query);
+
+        // Renderiza la vista 'consulta_equipos' con los equipos encontrados
+        res.render('consulta4', { equipos });
+    } catch (error) {
+        console.error('Error al obtener los equipos médicos:', error);
+        res.render('consulta4', { error: 'Ocurrió un error al obtener los equipos médicos.' });
+    }
+});
 
 
 
-app.get('/consulta9', (req, res) =>{
-    res.render('consulta9')
-})
+app.get('/consulta5', async (req, res) => {
+    try {
+        const query = `
+            SELECT
+                Paciente.Nombre AS Nombre_Paciente,
+                Personal_Medico.Nombre AS Nombre_Medico,
+                SUM(Factura.Monto) AS Total_Facturado
+            FROM
+                Factura
+            JOIN
+                Paciente ON Factura.ID_Paciente = Paciente.ID_Paciente
+            JOIN
+                Cita_Medica ON Factura.ID_Cita = Cita_Medica.ID_Cita
+            JOIN
+                Personal_Medico ON Cita_Medica.ID_Personal = Personal_Medico.ID_Personal
+            WHERE
+                EXTRACT(MONTH FROM Factura.Fecha_Emision) = EXTRACT(MONTH FROM CURRENT_DATE)
+                AND EXTRACT(YEAR FROM Factura.Fecha_Emision) = EXTRACT(YEAR FROM CURRENT_DATE)
+            GROUP BY
+                Paciente.ID_Paciente, Personal_Medico.ID_Personal
+            ORDER BY
+                Paciente.Nombre, Personal_Medico.Nombre;
+        `;
+        
+        const facturacion = await sql(query);
+        console.log(facturacion);
+
+        // Renderizar la vista con los datos de facturación
+        res.render('consulta5', { facturacion });
+    } catch (error) {
+        console.error('Error al obtener el informe de facturación:', error);
+        res.render('consulta5', { error: 'Ocurrió un error al obtener el informe de facturación.' });
+    }
+});
 
 
 
 
-app.get('/consulta10', (req, res) =>{
-    res.render('consulta10')
-})
+app.get('/consulta6', async (req, res) => {
+    try {
+        // Obtener el RUT del médico y las fechas desde los parámetros de la URL
+        const medicoRUT = req.query.medicoRUT || '12345678-9';  // Se usa un valor por defecto si no se pasa
+        const fechaInicio = req.query.fechaInicio  || '2024-01-01'; // Valor por defecto
+        const fechaFin = req.query.fechaFin || '2024-12-31'; // Valor por defecto
+
+        // Consulta SQL con placeholders para parámetros dinámicos
+        const query = `
+            SELECT p.Nombre AS Paciente, 
+                pm.Nombre AS Personal_Medico, 
+                cm.Fecha, 
+                cm.Motivo, 
+                cm.Diagnostico, 
+                cm.Tratamiento
+            FROM Cita_Medica cm
+            JOIN Personal_Medico pm ON cm.ID_Personal = pm.ID_Personal
+            JOIN Paciente p ON cm.ID_Paciente = p.ID_Paciente
+            WHERE pm.RUT = $1  -- El RUT del médico o enfermero específico
+            AND cm.Fecha BETWEEN $2 AND $3  -- Rango de fechas
+            AND cm.Estado = 'Completada';  -- Solo citas completadas`
+        ;
+
+        // Ejecutar la consulta con los parámetros dinámicos
+        const pacientes = await sql.query(query, [medicoRUT, fechaInicio, fechaFin]);
+
+        // Renderizar los resultados en la vista
+        res.render('consulta6', { pacientes: pacientes.rows, medicoRUT, fechaInicio, fechaFin });
+    } catch (error) {
+        console.error('Error al obtener los pacientes:', error);
+        res.render('consulta6', { error: 'Ocurrió un error al obtener los pacientes.' });
+    }
+});
 
 
 
-app.get('/consulta11', (req, res) =>{
-    res.render('consulta11')
-})
+
+app.get('/consulta7', async (req, res) => {
+    try {
+        const query = `
+            SELECT
+                paciente.nombre AS Nombre_Paciente,
+                Cita_Medica.Fecha,
+                Cita_Medica.Estado
+            FROM
+                Cita_Medica
+            JOIN
+                Paciente ON Cita_Medica.ID_Paciente = Paciente.ID_Paciente
+            WHERE
+                Cita_Medica.Estado IN ('Cancelada', 'Reprogramada')  -- el estado de la cita
+                AND Cita_Medica.Fecha BETWEEN CURRENT_DATE - INTERVAL '1 MONTH' AND CURRENT_DATE -- puede que no salga nada debido a las fechas que hay en la base de datos
+            ORDER BY
+                Cita_Medica.Fecha;
+        `;
+
+        const pacientes = await sql(query);
+        console.log('Pacientes:', pacientes);
+
+        res.render('consulta7', { pacientes });
+    } catch (error) {
+        console.error('Error al obtener los pacientes con citas canceladas o reprogramadas:', error);
+        res.render('consulta7', { error: 'Ocurrió un error al obtener los pacientes.' });
+    }
+});
+
+
+
+
+
+
+app.get('/consulta8', async (req, res) => {
+    try {
+        const { fecha, hora } = req.query;
+
+        if (!fecha || !hora) {
+            return res.render('consulta8', { error: 'Por favor, seleccione una fecha y hora.' });
+        }
+
+        const query = `
+            SELECT 
+                Personal_Medico.ID_Personal,
+                Personal_Medico.Nombre,
+                Personal_Medico.Especialidad
+            FROM 
+                Personal_Medico
+            LEFT JOIN 
+                Cita_Medica ON Personal_Medico.ID_Personal = Cita_Medica.ID_Personal
+                AND Cita_Medica.Fecha = $1
+                AND Cita_Medica.Hora = $2
+            WHERE 
+                Cita_Medica.ID_Cita IS NULL
+            ORDER BY 
+                Personal_Medico.Nombre;
+        `;
+
+        const medicosDisponibles = await sql(query, [fecha, hora]);
+
+        res.render('consulta8', { medicosDisponibles, fecha, hora });
+    } catch (error) {
+        console.error('Error al obtener la disponibilidad de los médicos:', error);
+        res.render('consulta8', { error: 'Ocurrió un error al obtener la disponibilidad de los médicos.' });
+    }
+});
+
+
+
+
+app.get('/consulta9', async (req, res) => {
+    try {
+        const query = `
+            SELECT 
+                Nombre_Producto, 
+                Fecha_Caducidad
+            FROM 
+                inventario_medico
+            WHERE 
+            Fecha_Caducidad < CURRENT_DATE -- esto muestra los medicamentes caducados y los proximos a caducar
+            OR Fecha_Caducidad BETWEEN CURRENT_DATE AND CURRENT_DATE + INTERVAL '30 days'
+            ORDER BY 
+                Fecha_Caducidad;
+        `;
+
+        const medicamentos = await sql(query);
+        res.render('consulta9', { medicamentos });
+    } catch (error) {
+        console.error('Error al obtener los medicamentos próximos a caducar:', error);
+        res.render('consulta9', { error: 'Ocurrió un error al obtener los medicamentos.' });
+    }
+});
+
+
+
+
+
+
+app.get('/consulta10', async (req, res) => {
+    try {
+        const query = `
+            SELECT 
+                Estado,
+                Nombre_Producto
+            FROM 
+                Inventario_Medico
+            ORDER BY 
+                Estado ,Nombre_Producto ;
+        `;
+
+        const inventario = await sql(query);
+        console.log('inventario', inventario)
+        res.render('consulta10', { inventario });
+    } catch (error) {
+        console.error('Error al obtener el inventario:', error);
+        res.render('consulta10', { error: 'Ocurrió un error al obtener el inventario.' });
+    }
+});
+
+
+
+
+app.get('/consulta11', async (req, res) => {
+    try {
+        const query = `
+            SELECT
+                Factura.ID_Factura,
+                Paciente.Nombre AS Nombre_Paciente,
+                Factura.Monto AS Monto_Pendiente,
+                Factura.Estado_Pago
+            FROM
+                Factura
+            JOIN
+                Paciente ON Factura.ID_Paciente = Paciente.ID_Paciente
+            WHERE
+                Factura.Estado_Pago = 'Pendiente'
+            ORDER BY
+                Factura.ID_Factura;
+        `;
+        
+        const facturasPendientes = await sql(query);
+        res.render('consulta11', { facturasPendientes });
+        console.log('facturasPendientes', facturasPendientes)
+    } catch (error) {
+        console.error('Error al obtener las facturas pendientes:', error);
+        res.render('consulta11', { error: 'Ocurrió un error al obtener las facturas pendientes.' });
+    }
+});
+
 
 
 app.get('/consulta12', (req, res) =>{
@@ -152,9 +403,26 @@ app.get('/consulta13', (req, res) =>{
 })
 
 
-app.get('/consulta14', (req, res) =>{
-    res.render('consulta14')
-})
+app.get('/consulta14', async (req, res) => {
+    try {
+        const query = `
+            SELECT
+                Nombre,
+                Especialidad
+            FROM
+                Personal_Medico
+            ORDER BY
+                Especialidad, Nombre;
+        `;
+        
+        const especialidades = await sql(query);
+        res.render('consulta14', { especialidades });
+    } catch (error) {
+        console.error('Error al obtener las especialidades:', error);
+        res.render('consulta14', { error: 'Ocurrió un error al obtener las especialidades.' });
+    }
+});
+
 
 app.get('/consulta15', (req, res) =>{
     res.render('consulta15')

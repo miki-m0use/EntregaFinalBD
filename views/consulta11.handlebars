@@ -1,19 +1,34 @@
 <main>
-    <h2 class="Titulos-categorias"> Todos los resultados </h2>
+    <h2 class="Titulos-categorias"> Facturas Pendientes </h2>
 
+    {{#if error}}
+        <p style="color: red;">{{error}}</p>
+    {{/if}}
 
-
-    <div class="container mt-4">
-        <div class="row">
-            
-
-
-
-
-
-
-        </div>
-    </div>
+    {{#if facturasPendientes}}
+        <table>
+            <thead>
+                <tr>
+                    <th>ID de Factura</th>
+                    <th>Nombre del Paciente</th>
+                    <th>Monto Pendiente</th>
+                    <th>Estado de Pago</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each facturasPendientes}}
+                    <tr>
+                        <td>{{this.id_factura}}</td>
+                        <td>{{this.nombre_paciente}}</td>
+                        <td>{{this.monto_pendiente}}</td>
+                        <td>{{this.estado_pago}}</td>
+                    </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    {{else}}
+        <p>No hay facturas pendientes.</p>
+    {{/if}}
 
 
 </main>

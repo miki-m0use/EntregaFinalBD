@@ -1,19 +1,41 @@
 <main>
     <h2 class="Titulos-categorias"> Todos los resultados </h2>
 
+    <form action="/consulta8" method="get">
+        <label for="fecha">Fecha:</label>
+        <input type="date" id="fecha" name="fecha" required />
 
+        <label for="hora">Hora:</label>
+        <input type="time" id="hora" name="hora" required />
 
-    <div class="container mt-4">
-        <div class="row">
-            
+        <button type="submit">Consultar</button>
+    </form>
 
+    {{#if error}}
+        <p style="color: red;">{{error}}</p>
+    {{/if}}
 
-
-
-
-
-        </div>
-    </div>
+    {{#if medicosDisponibles}}
+        <h3>Médicos Disponibles el {{fecha}} a las {{hora}}</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Especialidad</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each medicosDisponibles}}
+                    <tr>
+                        <td>{{this.nombre}}</td>
+                        <td>{{this.especialidad}}</td>
+                    </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    {{else if fecha}}
+        <p>No hay médicos disponibles en esta fecha y hora.</p>
+    {{/if}}
 
 
 </main>

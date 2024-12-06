@@ -2,51 +2,33 @@
     <h2 class="Titulos-categorias"> Todos los resultados </h2>
 
     <form action="/consulta1" method="GET">
-        <label for="nombreMedico">Nombre del Médico:</label>
-        <input type="text" id="nombreMedico" name="nombreMedico" placeholder="Ingrese el nombre del médico" required>
-
-        <button type="submit">Consultar Citas</button>
+    <label for="idMedico">ID del Médico:</label>
+    <input type="number" id="idMedico" name="idMedico" required>
+    <button type="submit">Consultar</button>
     </form>
-
-    <div class="container mt-4">
-        <div class="row">
-            
-
-
-
-
-        </div>
-    </div>
-
 
     <h1>Citas Programadas</h1>
 
-    {{#if citas.length}}
-        <table>
-            <thead>
-                <tr>
-                    <th>Nombre del Paciente</th>
-                    <th>Motivo de la Consulta</th>
-                    <th>Fecha</th>
-                    <th>Hora</th>
-                </tr>
-            </thead>
-            <tbody>
-                {{#each citas}}
-                    <tr>
-                        <td>{{this.nombrePaciente}}</td>
-                        <td>{{this.motivo}}</td>
-                        <td>{{this.fecha}}</td>
-                        <td>{{this.hora}}</td>
-                    </tr>
-                {{/each}}
-            </tbody>
-        </table>
-    {{else}}
-        <p>No se encontraron citas programadas para el médico indicado.</p>
+    {{#if error}}
+    <p style="color: red;">{{error}}</p>
     {{/if}}
 
-    <a href="/consulta1">Realizar otra consulta</a>
+<!-- Mostrar las citas si están disponibles -->
+{{#if citas}}
+    <h2>Citas Programadas</h2>
+    <ul>
+        {{#each citas}}
+            <li>
+                <strong>Fecha:</strong> {{this.fecha}} <br>
+                <strong>Hora:</strong> {{Hora}} <br>
+                <strong>Paciente:</strong> {{Nombre_Paciente}} <br>
+                <strong>Motivo:</strong> {{Motivo}}
+            </li>
+        {{/each}}
+    </ul>
+{{else}}
+    <p>No se encontraron citas para este médico.</p>
+{{/if}}
 
 
 </main>

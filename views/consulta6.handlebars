@@ -2,18 +2,39 @@
     <h2 class="Titulos-categorias"> Todos los resultados </h2>
 
 
+    <form action="/consulta6" method="get">
+        <label for="medicoRUT">Ingrese el ID del Médico:</label>
+        <input type="text" id="medicoRUT" name="medicoRUT" value="{{medicoRUT}}" required />
+        <button type="submit">Buscar</button>
+    </form>
 
-    <div class="container mt-4">
-        <div class="row">
-            
+    {{#if error}}
+        <p style="color: red;">{{error}}</p>
+    {{/if}}
 
-
-
-
-
-
-        </div>
-    </div>
+    {{#if pacientes}}
+        <h2>Pacientes Atendidos por el Médico ID: {{medicoId}}</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Nombre del Paciente</th>
+                    <th>Fecha de Cita</th>
+                    <th>Nombre del Médico</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each pacientes}}
+                    <tr>
+                        <td>{{this.Nombre_Paciente}}</td>
+                        <td>{{this.fecha}}</td>
+                        <td>{{this.Nombre_Medico}}</td>
+                    </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    {{else}}
+        <p>No se encontraron pacientes atendidos por este médico en el último mes.</p>
+    {{/if}}
 
 
 </main>
