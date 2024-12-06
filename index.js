@@ -39,13 +39,13 @@ app.get('/administracion', (req, res) =>{
 app.get('/consulta1', async (req, res) => {
     const { idMedico } = req.query;
 
-    // Verificar si el idMedico fue proporcionado
+    // verificamos si el idMedico fue proporcionado
     if (!idMedico) {
         return res.render('consulta1', { error: 'Debe proporcionar el id del médico' });
     }
 
     try {
-        // Consultar citas programadas para el médico en la próxima semana
+        
         const query = `
             SELECT 
     cita_medica.Fecha,
@@ -65,10 +65,10 @@ ORDER BY
 
         `;
 
-        // Ejecutar la consulta SQL
+        
         const citas = await sql(query, [idMedico]);
 
-        // Enviar los resultados a la vista (consulta1)
+        
         res.render('consulta1', { citas, idMedico });
         console.log('citas', citas)
 
@@ -78,7 +78,7 @@ ORDER BY
     }
 });
 
-
+///////
 app.get('/consulta2', async (req, res) => {
     const { idPaciente } = req.query;
 
@@ -107,7 +107,7 @@ app.get('/consulta2', async (req, res) => {
     }
 });
 
-
+//////////////////////
 app.get('/consulta3', async (req, res) => {
     try {
         const query = `
@@ -126,7 +126,7 @@ app.get('/consulta3', async (req, res) => {
 
         const productos = await sql(query);
 
-        // Renderiza la vista 'consulta_inventario' con los productos encontrados
+        
         res.render('consulta3', { productos });
     } catch (error) {
         console.error('Error al obtener los productos del inventario:', error);
@@ -136,7 +136,7 @@ app.get('/consulta3', async (req, res) => {
 
 
 
-
+//////////////////////////////////
 app.get('/consulta4', async (req, res) => {
     try {
         const query = `
@@ -153,7 +153,7 @@ app.get('/consulta4', async (req, res) => {
 
         const equipos = await sql(query);
 
-        // Renderiza la vista 'consulta_equipos' con los equipos encontrados
+        
         res.render('consulta4', { equipos });
     } catch (error) {
         console.error('Error al obtener los equipos médicos:', error);
@@ -190,7 +190,7 @@ app.get('/consulta5', async (req, res) => {
         const facturacion = await sql(query);
         console.log(facturacion);
 
-        // Renderizar la vista con los datos de facturación
+        
         res.render('consulta5', { facturacion });
     } catch (error) {
         console.error('Error al obtener el informe de facturación:', error);
@@ -200,22 +200,22 @@ app.get('/consulta5', async (req, res) => {
 
 
 
-
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 app.get('/consulta6', async (req, res) => {
     try {
-        // Obtener el RUT del médico y las fechas desde los parámetros de la URL
-        const medicoRUT = req.query.medicoRUT || '12345678-9';  // Se usa un valor por defecto si no se pasa
-        const fechaInicio = req.query.fechaInicio  || '2024-01-01'; // Valor por defecto
-        const fechaFin = req.query.fechaFin || '2024-12-31'; // Valor por defecto
 
-        // Consulta SQL con placeholders para parámetros dinámicos
+        const medicoRUT = req.query.medicoRUT || '12345678-9';  
+        const fechaInicio = req.query.fechaInicio  || '2024-01-01'; 
+        const fechaFin = req.query.fechaFin || '2024-12-31'; 
+
+        
         const query = `
             SELECT p.Nombre AS Paciente, 
-                pm.Nombre AS Personal_Medico, 
-                cm.Fecha, 
-                cm.Motivo, 
-                cm.Diagnostico, 
-                cm.Tratamiento
+            pm.Nombre AS Personal_Medico, 
+            cm.Fecha, 
+            cm.Motivo, 
+            cm.Diagnostico, 
+            cm.Tratamiento
             FROM Cita_Medica cm
             JOIN Personal_Medico pm ON cm.ID_Personal = pm.ID_Personal
             JOIN Paciente p ON cm.ID_Paciente = p.ID_Paciente
@@ -224,10 +224,10 @@ app.get('/consulta6', async (req, res) => {
             AND cm.Estado = 'Completada';  -- Solo citas completadas`
         ;
 
-        // Ejecutar la consulta con los parámetros dinámicos
+        // Ejecuta la consulta con los parámetros dinámicos
         const pacientes = await sql.query(query, [medicoRUT, fechaInicio, fechaFin]);
 
-        // Renderizar los resultados en la vista
+        
         res.render('consulta6', { pacientes: pacientes.rows, medicoRUT, fechaInicio, fechaFin });
     } catch (error) {
         console.error('Error al obtener los pacientes:', error);
@@ -237,7 +237,7 @@ app.get('/consulta6', async (req, res) => {
 
 
 
-
+////////////////////////////////////////////////////////////
 app.get('/consulta7', async (req, res) => {
     try {
         const query = `
@@ -269,7 +269,7 @@ app.get('/consulta7', async (req, res) => {
 
 
 
-
+//////////////////////////////////////////////////////////////////////////
 
 app.get('/consulta8', async (req, res) => {
     try {
@@ -306,7 +306,7 @@ app.get('/consulta8', async (req, res) => {
 });
 
 
-
+////////////////////////////////////////////////////////////////////
 
 app.get('/consulta9', async (req, res) => {
     try {
@@ -334,7 +334,7 @@ app.get('/consulta9', async (req, res) => {
 
 
 
-
+////////////////////////////////////////////////////////////////////////////////
 
 app.get('/consulta10', async (req, res) => {
     try {
@@ -359,7 +359,7 @@ app.get('/consulta10', async (req, res) => {
 
 
 
-
+///////////////////////////////////////////////////////////////////////////
 app.get('/consulta11', async (req, res) => {
     try {
         const query = `
