@@ -48,20 +48,20 @@ app.get('/consulta1', async (req, res) => {
         
         const query = `
             SELECT 
-    cita_medica.Fecha,
-    cita_medica.Hora,
-    Paciente.Nombre AS Nombre_Paciente,
-    cita_medica.Motivo
-FROM 
-    cita_medica
-JOIN 
-    Paciente ON cita_medica.ID_Paciente = Paciente.ID_Paciente
-WHERE 
-    cita_medica.ID_Personal = $1
-    AND cita_medica.Fecha BETWEEN CURRENT_DATE - INTERVAL '2 MONTH' AND CURRENT_DATE + INTERVAL '2 MONTH'
-    AND cita_medica.Estado = 'Programada'
-ORDER BY 
-    cita_medica.Fecha, cita_medica.Hora;
+                cita_medica.Fecha,
+                cita_medica.Hora,
+                Paciente.Nombre AS Nombre_Paciente,
+                cita_medica.Motivo
+            FROM 
+                cita_medica
+            JOIN 
+                Paciente ON cita_medica.ID_Paciente = Paciente.ID_Paciente
+            WHERE 
+                cita_medica.ID_Personal = $1
+                AND cita_medica.Fecha BETWEEN CURRENT_DATE AND CURRENT_DATE + INTERVAL '7 days'
+                AND cita_medica.Estado = 'Programada'
+            ORDER BY 
+                cita_medica.Fecha, cita_medica.Hora;
 
         `;
 
@@ -179,12 +179,13 @@ app.get('/consulta5', async (req, res) => {
             JOIN
                 Personal_Medico ON Cita_Medica.ID_Personal = Personal_Medico.ID_Personal
             WHERE
-                EXTRACT(MONTH FROM Factura.Fecha_Emision) = EXTRACT(MONTH FROM CURRENT_DATE)
-                AND EXTRACT(YEAR FROM Factura.Fecha_Emision) = EXTRACT(YEAR FROM CURRENT_DATE)
+                Factura.Fecha_Emision >= DATE_TRUNC('month', CURRENT_DATE) - INTERVAL '2 months'
+                AND Factura.Fecha_Emision < DATE_TRUNC('month', CURRENT_DATE)
             GROUP BY
                 Paciente.ID_Paciente, Personal_Medico.ID_Personal
             ORDER BY
                 Paciente.Nombre, Personal_Medico.Nombre;
+
         `;
         
         const facturacion = await sql(query);
@@ -192,6 +193,7 @@ app.get('/consulta5', async (req, res) => {
 
         
         res.render('consulta5', { facturacion });
+        console.log('facturacion', facturacion)
     } catch (error) {
         console.error('Error al obtener el informe de facturación:', error);
         res.render('consulta5', { error: 'Ocurrió un error al obtener el informe de facturación.' });
@@ -202,38 +204,41 @@ app.get('/consulta5', async (req, res) => {
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 app.get('/consulta6', async (req, res) => {
+    const { idMedico, fechaInicio, fechaFin } = req.query;
+
+    if (!idMedico || !fechaInicio || !fechaFin) {
+        return res.render('consulta6', { error: 'Debe proporcionar el ID del médico y el rango de fechas.' });
+    }
+
     try {
-
-        const medicoRUT = req.query.medicoRUT || '12345678-9';  
-        const fechaInicio = req.query.fechaInicio  || '2024-01-01'; 
-        const fechaFin = req.query.fechaFin || '2024-12-31'; 
-
-        
         const query = `
-            SELECT p.Nombre AS Paciente, 
-            pm.Nombre AS Personal_Medico, 
-            cm.Fecha, 
-            cm.Motivo, 
-            cm.Diagnostico, 
-            cm.Tratamiento
-            FROM Cita_Medica cm
-            JOIN Personal_Medico pm ON cm.ID_Personal = pm.ID_Personal
-            JOIN Paciente p ON cm.ID_Paciente = p.ID_Paciente
-            WHERE pm.RUT = $1  -- El RUT del médico o enfermero específico
-            AND cm.Fecha BETWEEN $2 AND $3  -- Rango de fechas
-            AND cm.Estado = 'Completada';  -- Solo citas completadas`
-        ;
+            SELECT 
+                Paciente.Nombre AS Nombre_Paciente,
+                Cita_Medica.Fecha,
+                Cita_Medica.Hora
+            FROM 
+                Cita_Medica
+            JOIN 
+                Paciente ON Cita_Medica.ID_Paciente = Paciente.ID_Paciente
+            WHERE 
+                Cita_Medica.ID_Personal = $1
+                AND Cita_Medica.Fecha BETWEEN $2 AND $3
+            ORDER BY 
+                Cita_Medica.Fecha, Cita_Medica.Hora;
+        `;
 
-        // Ejecuta la consulta con los parámetros dinámicos
-        const pacientes = await sql.query(query, [medicoRUT, fechaInicio, fechaFin]);
+        // Ejecutar la consulta SQL
+        const pacientes = await sql(query, [idMedico, fechaInicio, fechaFin]);
 
-        
-        res.render('consulta6', { pacientes: pacientes.rows, medicoRUT, fechaInicio, fechaFin });
+        // Renderizar los resultados en la vista
+        res.render('consulta6', { pacientes, idMedico, fechaInicio, fechaFin });
+        console.log('pacientes', pacientes)
     } catch (error) {
         console.error('Error al obtener los pacientes:', error);
-        res.render('consulta6', { error: 'Ocurrió un error al obtener los pacientes.' });
+        res.render('consulta6', { error: 'Ocurrió un error al obtener los pacientes atendidos.' });
     }
 });
+
 
 
 
@@ -389,14 +394,89 @@ app.get('/consulta11', async (req, res) => {
 
 
 
-app.get('/consulta12', (req, res) =>{
-    res.render('consulta12')
-})
+app.get('/consulta12', async (req, res) => {
+    const { idEquipo } = req.query;
+
+    if (!idEquipo) {
+        return res.render('consulta12', { error: 'Debe proporcionar el ID del equipo.' });
+    }
+
+    try {
+        const query = `
+            SELECT 
+                equipo_cita.id_equipo AS ID_Equipo,
+                cita_medica.fecha AS Fecha_Cita,
+                cita_medica.hora AS Hora_Cita,
+                paciente.nombre AS Nombre_Paciente,
+                personal_medico.nombre AS Nombre_Medico
+            FROM 
+                equipo_cita
+            JOIN 
+                cita_medica ON equipo_cita.id_cita = cita_medica.id_cita
+            JOIN 
+                paciente ON cita_medica.id_paciente = paciente.id_paciente
+            JOIN 
+                personal_medico ON cita_medica.id_personal = personal_medico.id_personal
+            WHERE 
+                equipo_cita.id_equipo = $1
+            ORDER BY 
+                cita_medica.fecha DESC, cita_medica.hora DESC;
+        `;
+
+        const historial = await sql(query, [idEquipo]);
+        res.render('consulta12', { historial, idEquipo });
+        console.log('historial', historial)
+    } catch (error) {
+        console.error('Error al obtener el historial del equipo:', error);
+        res.render('consulta12', { error: 'Ocurrió un error al obtener el historial del equipo.' });
+    }
+});
 
 
-app.get('/consulta13', (req, res) =>{
-    res.render('consulta13')
-})
+
+app.get('/consulta13', async (req, res) => {
+    const { idPaciente, fechaInicio, fechaFin } = req.query;
+
+    // Verificar si los parámetros fueron proporcionados
+    if (!idPaciente || !fechaInicio || !fechaFin) {
+        return res.render('consulta13', { error: 'Debe proporcionar el ID del paciente y el rango de fechas' });
+    }
+
+    try {
+        // Consultar el resumen de las citas del paciente en el periodo especificado
+        const query = `
+            SELECT 
+                cita_medica.Fecha, 
+                cita_medica.Hora, 
+                Personal_Medico.Nombre AS Nombre_Medico, 
+                cita_medica.Diagnostico
+            FROM 
+                cita_medica
+            JOIN 
+                Paciente ON cita_medica.ID_Paciente = Paciente.ID_Paciente
+            JOIN 
+                Personal_Medico ON cita_medica.ID_Personal = Personal_Medico.ID_Personal
+            WHERE 
+                cita_medica.ID_Paciente = $1
+                AND cita_medica.Fecha BETWEEN $2 AND $3
+            ORDER BY 
+                cita_medica.Fecha, cita_medica.Hora;
+        `;
+
+        // Ejecutar la consulta SQL
+        const citas = await sql(query, [idPaciente, fechaInicio, fechaFin]);
+
+        // Renderizar la vista con los resultados
+        res.render('consulta13', { citas, idPaciente, fechaInicio, fechaFin });
+        console.log('citas', citas)
+
+    } catch (error) {
+        console.error('Error al obtener las citas:', error);
+        res.render('consulta13', { error: 'Ocurrió un error al obtener las citas del paciente.' });
+    }
+});
+
+
 
 
 app.get('/consulta14', async (req, res) => {

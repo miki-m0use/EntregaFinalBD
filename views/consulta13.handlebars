@@ -1,19 +1,51 @@
 <main>
-    <h2 class="Titulos-categorias"> Todos los resultados </h2>
+    <h1>Resumen de Citas del Paciente</h1>
 
+    <!-- Formulario para ingresar el ID del paciente y el rango de fechas -->
+    <form method="get" action="/consulta13">
+        <label for="idPaciente">ID del Paciente:</label>
+        <input type="text" id="idPaciente" name="idPaciente" required>
 
+        <label for="fechaInicio">Fecha de Inicio:</label>
+        <input type="date" id="fechaInicio" name="fechaInicio" required>
 
-    <div class="container mt-4">
-        <div class="row">
-            
+        <label for="fechaFin">Fecha de Fin:</label>
+        <input type="date" id="fechaFin" name="fechaFin" required>
 
+        <button type="submit">Ver Citas</button>
+    </form>
 
+    <!-- Mensaje de error en caso de que haya algún problema -->
+    {{#if error}}
+        <div class="error">{{error}}</div>
+    {{/if}}
 
-
-
-
-        </div>
-    </div>
+    <!-- Tabla con las citas del paciente -->
+    {{#if citas}}
+        <h2>Citas del Paciente</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Fecha</th>
+                    <th>Hora</th>
+                    <th>Médico</th>
+                    <th>Diagnóstico</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each citas}}
+                    <tr>
+                        <td>{{this.fecha}}</td>
+                        <td>{{this.hora}}</td>
+                        <td>{{this.nombre_medico}}</td>
+                        <td>{{this.diagnostico}}</td>
+                    </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    {{else}}
+        <p>No se encontraron citas para el periodo seleccionado.</p>
+    {{/if}}
 
 
 </main>

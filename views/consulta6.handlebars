@@ -1,39 +1,52 @@
 <main>
-    <h2 class="Titulos-categorias"> Todos los resultados </h2>
+    <h2>Consulta de Pacientes Atendidos</h2>
 
-
+    <!-- Formulario para ingresar ID del médico y rango de fechas -->
     <form action="/consulta6" method="get">
-        <label for="medicoRUT">Ingrese el ID del Médico:</label>
-        <input type="text" id="medicoRUT" name="medicoRUT" value="{{medicoRUT}}" required />
-        <button type="submit">Buscar</button>
+        <label for="idMedico">ID del Médico:</label>
+        <input type="number" id="idMedico" name="idMedico" required>
+
+        <label for="fechaInicio">Fecha de Inicio:</label>
+        <input type="date" id="fechaInicio" name="fechaInicio" required>
+
+        <label for="fechaFin">Fecha de Fin:</label>
+        <input type="date" id="fechaFin" name="fechaFin" required>
+
+        <button type="submit">Consultar</button>
     </form>
 
+    <!-- Mostrar error en caso de que ocurra -->
     {{#if error}}
         <p style="color: red;">{{error}}</p>
     {{/if}}
 
+    <!-- Mostrar resultados si hay pacientes -->
     {{#if pacientes}}
-        <h2>Pacientes Atendidos por el Médico ID: {{medicoId}}</h2>
+        <h3>Pacientes atendidos por el médico ID: {{idMedico}}</h3>
+        <p>En el Período: {{fechaInicio}} a {{fechaFin}}</p>
+
+
+        <br>
         <table>
             <thead>
                 <tr>
                     <th>Nombre del Paciente</th>
-                    <th>Fecha de Cita</th>
-                    <th>Nombre del Médico</th>
+                    <th>Fecha</th>
+                    <th>Hora</th>
                 </tr>
             </thead>
             <tbody>
                 {{#each pacientes}}
                     <tr>
-                        <td>{{this.Nombre_Paciente}}</td>
+                        <td>{{this.nombre_paciente}}</td>
                         <td>{{this.fecha}}</td>
-                        <td>{{this.Nombre_Medico}}</td>
+                        <td>{{this.hora}}</td>
                     </tr>
                 {{/each}}
             </tbody>
         </table>
     {{else}}
-        <p>No se encontraron pacientes atendidos por este médico en el último mes.</p>
+        <p>No se encontraron pacientes atendidos en el periodo especificado.</p>
     {{/if}}
 
 

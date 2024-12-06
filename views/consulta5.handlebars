@@ -13,16 +13,16 @@
             <thead>
                 <tr>
                     <th>Nombre del Paciente</th>
-                    <th>Nombre del Médico</th>
+                    <th> -        Nombre del Médico     - </th>
                     <th>Total Facturado</th>
                 </tr>
             </thead>
             <tbody>
                 {{#each facturacion}}
                     <tr>
-                        <td>{{this.Nombre_Paciente}}</td>
-                        <td>{{this.Nombre_Medico}}</td>
-                        <td>${{this.Total_Facturado.toFixed(2)}}</td>
+                        <td> {{this.nombre_paciente}}</td>
+                        <td> {{this.nombre_medico}}</td>
+                        <td> ${{this.total_facturado}}</td>
                     </tr>
                 {{/each}}
             </tbody>
