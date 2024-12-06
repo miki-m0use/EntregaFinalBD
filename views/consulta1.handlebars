@@ -3,7 +3,7 @@
 
     <form action="/consulta1" method="GET">
     <label for="idMedico">ID del Médico:</label>
-    <input type="number" id="idMedico" name="idMedico" required>
+    <input type="number" id="idMedico" name="idMedico" value="{{idMedico}}" required>
     <button type="submit">Consultar</button>
     </form>
 
@@ -11,7 +11,7 @@
 
     {{#if error}}
     <p style="color: red;">{{error}}</p>
-    {{/if}}
+{{/if}}
 
 <!-- Mostrar las citas si están disponibles -->
 {{#if citas}}
@@ -20,9 +20,9 @@
         {{#each citas}}
             <li>
                 <strong>Fecha:</strong> {{this.fecha}} <br>
-                <strong>Hora:</strong> {{Hora}} <br>
-                <strong>Paciente:</strong> {{Nombre_Paciente}} <br>
-                <strong>Motivo:</strong> {{Motivo}}
+                <strong>Hora:</strong> {{this.hora}} <br>
+                <strong>Paciente:</strong> {{this.nombre_paciente}} <br>
+                <strong>Motivo:</strong> {{this.motivo}}
             </li>
         {{/each}}
     </ul>

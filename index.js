@@ -36,7 +36,6 @@ app.get('/administracion', (req, res) =>{
 
 ////////    CONSULTAS ////////////////////
 
-
 app.get('/consulta1', async (req, res) => {
     const { idMedico } = req.query;
 
@@ -59,7 +58,7 @@ JOIN
     Paciente ON cita_medica.ID_Paciente = Paciente.ID_Paciente
 WHERE 
     cita_medica.ID_Personal = $1
-    AND cita_medica.Fecha BETWEEN CURRENT_DATE AND CURRENT_DATE + INTERVAL '7 days'
+    AND cita_medica.Fecha BETWEEN CURRENT_DATE - INTERVAL '2 MONTH' AND CURRENT_DATE + INTERVAL '2 MONTH'
     AND cita_medica.Estado = 'Programada'
 ORDER BY 
     cita_medica.Fecha, cita_medica.Hora;
@@ -71,16 +70,13 @@ ORDER BY
 
         // Enviar los resultados a la vista (consulta1)
         res.render('consulta1', { citas, idMedico });
+        console.log('citas', citas)
 
     } catch (error) {
         console.error('Error al obtener las citas:', error);
         res.render('consulta1', { error: 'Ocurrió un error al obtener las citas programadas', idMedico });
     }
 });
-
-
-
-
 
 
 app.get('/consulta2', async (req, res) => {
