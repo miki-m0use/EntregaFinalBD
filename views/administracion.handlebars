@@ -14,188 +14,154 @@
 
             <!-- Agregar Producto -->
             <section class="my-5">
-                <h2>Productos Existentes <a href="/dataProductos"> -> base de datos </a> </h2>
-                <h2>Ingreso de Personal Medico </h2>
-                
-                <form id="crearProductoForm" class="row g-3" action="/PersonalMedico"  method="POST">
-                        <div class="col-md-6">
-                            <label for="nombrePM" class="form-label">Nombre del Personal Medico </label>
-                            <input type="text" class="form-control" id="nombrePM" name="nombrePM" placeholder="Nombre">   
-                        </div>
-
-                        <div class="col-md-6">
-                            <label for="rutPM" class="form-label">RUT</label>
-                            <input type="text" class="form-control" id="rutPM" name="rutPM" placeholder="RUT">
-                        </div>
-
-                        <div class="col-md-6">
-                            <label for="contactoPM" class="form-label"> Contacto </label>
-                            <input type="text" class="form-control" id="contactoPM" name="contactoPM" placeholder="Numero de contacto">
-                        </div>
-                        
-                        <div class="col-md-6">
-                            <label for="direccionPM" class="form-label">Direccion</label>
-                            <input type="text" class="form-control" id="direccionPM" name="direccionPM" placeholder="direccion del usuario">
-                        </div>
-
-                        <div class="col-md-6">
-                            <label for="numeroDeLicencia" class="form-label"> Numero de licencia</label>
-                            <input type="text" class="form-control" id="numeroDeLicencia" name="numeroDeLicencia" placeholder="Numero de licencia del usuario">
-                        </div>
-
-
-                        <div class="col-md-6">
-                            <label for="numeroDeLicencia" class="form-label"> Especialidad </label>
-                            <select id="numeroDeLicencia" name="numeroDeLicencia">
-                                <option value="enfermero"> Enfermero </option>
-                                <option value="cirujano"> Cirujano </option>
-                                <option value="pediatra"> Pediatra </option>
-                                <option value="general"> General </option>
-                            </select>
-                            
-                        </div>
-        
-                        <div class="col-12">
-                            <button type="submit" class="btn btn-primary">Agregar Producto</button>
-                        </div>
-                </form>
-
-                <br>
 
                 <h2> Ingreso de Pacientes nuevos </h2>
 
-                <form id="crearProductoForm" class="row g-3" action="/IngresoPacientes"  method="POST">
-                        <div class="col-md-6">
-                            <label for="nombrePM" class="form-label">Nombre del Personal Medico </label>
-                            <input type="text" class="form-control" id="nombrePM" name="nombrePM" placeholder="Nombre">   
-                        </div>
+                    <form action="/agregarPaciente" method="POST">
+                            <div>
+                                <label for="nombre">Nombre del paciente:</label>
+                                <input type="text" id="nombre" name="nombre" required>
+                            </div>
+                            <div>
+                                <label for="rut">RUT del paciente:</label>
+                                <input type="text" id="rut" name="rut" required>
+                            </div>
+                            <div>
+                                <label for="genero">Género:</label>
+                                <select id="genero" name="genero" required>
+                                    <option value="M">Masculino</option>
+                                    <option value="F">Femenino</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="contacto">Contacto del paciente:</label>
+                                <input type="text" id="contacto" name="contacto">
+                            </div>
+                            <div>
+                                <label for="direccion">Dirección del paciente:</label>
+                                <input type="text" id="direccion" name="direccion">
+                            </div>
+                            <div>
+                                <label for="numeroSeguro">Número de seguro del paciente:</label>
+                                <input type="text" id="numeroSeguro" name="numeroSeguro" required>
+                            </div>
+                            <div>
+                                <label for="fechaNacimiento">Fecha de nacimiento:</label>
+                                <input type="date" id="fechaNacimiento" name="fechaNacimiento">
+                            </div>
+                            <div>
+                                <button type="submit">Agregar paciente</button>
+                            </div>
+                        </form>
 
-                        <div class="col-md-6">
-                            <label for="rutPM" class="form-label">RUT</label>
-                            <input type="text" class="form-control" id="rutPM" name="rutPM" placeholder="RUT">
-                        </div>
+                        <!-- Mostrar error si existe -->
+                        {{#if error}}
+                            <div class="error">{{error}}</div>
+                        {{/if}}
 
-                        <div class="col-md-6">
-                            <label for="contactoPM" class="form-label"> Contacto </label>
-                            <input type="text" class="form-control" id="contactoPM" name="contactoPM" placeholder="Numero de contacto">
+                <br>
+                <h2> Ingreso de nuevo medico </h2>
+                    <form action="/agregarMedico" method="POST">
+                        <div>
+                            <label for="nombre">Nombre del médico:</label>
+                            <input type="text" id="nombre" name="nombre" required>
                         </div>
-                        
-                        <div class="col-md-6">
-                            <label for="direccionPM" class="form-label">Direccion</label>
-                            <input type="text" class="form-control" id="direccionPM" name="direccionPM" placeholder="direccion del usuario">
+                        <div>
+                            <label for="rut">RUT del médico:</label>
+                            <input type="text" id="rut" name="rut" required>
                         </div>
-
-                        <div class="col-md-6">
-                            <label for="numeroDeLicencia" class="form-label"> Numero de licencia</label>
-                            <input type="text" class="form-control" id="numeroDeLicencia" name="numeroDeLicencia" placeholder="Numero de licencia del usuario">
+                        <div>
+                            <label for="contacto">Contacto del médico:</label>
+                            <input type="text" id="contacto" name="contacto">
                         </div>
-
-
-                        <div class="col-md-6">
-                            <label for="numeroDeLicencia" class="form-label"> Especialidad </label>
-                            <select id="numeroDeLicencia" name="numeroDeLicencia">
-                                <option value="enfermero"> Enfermero </option>
-                                <option value="cirujano"> Cirujano </option>
-                                <option value="pediatra"> Pediatra </option>
-                                <option value="general"> General </option>
+                        <div>
+                            <label for="direccion">Dirección del médico:</label>
+                            <input type="text" id="direccion" name="direccion">
+                        </div>
+                        <div>
+                            <label for="numeroLicencia">Número de licencia:</label>
+                            <input type="text" id="numeroLicencia" name="numeroLicencia" required>
+                        </div>
+                        <div>
+                            <label for="especialidad">Especialidad:</label>
+                            <select id="especialidad" name="especialidad" required>
+                                <option value="Cirujano">Cirujano</option>
+                                <option value="Pediatra">Pediatra</option>
+                                <option value="Enfermero">Enfermero</option>
+                                <option value="General">General</option>
+                                <option value="Emergencias">Emergencias</option>
+                                <option value="Cardiología">Cardiología</option>
                             </select>
-                            
                         </div>
-        
-                        <div class="col-12">
-                            <button type="submit" class="btn btn-primary">Agregar Producto</button>
+                        <div>
+                            <label for="idDepartamento">ID del Departamento:</label>
+                            <input type="number" id="idDepartamento" name="idDepartamento" required>
                         </div>
-                </form>
+                        <div>
+                            <button type="submit">Agregar médico</button>
+                        </div>
+                    </form>
+
+                    <!-- Mostrar error si existe -->
+                    {{#if error}}
+                        <div class="error">{{error}}</div>
+                    {{/if}}
+
+                <h2> Sacar citas </h2>
+
+                        <form action="/agregar-consulta" method="POST">
+    <label for="fecha">Fecha:</label>
+    <input type="date" name="fecha" required><br>
+
+    <label for="hora">Hora:</label>
+    <input type="time" name="hora" required><br>
+
+    <label for="motivo">Motivo:</label>
+    <textarea name="motivo" required></textarea><br>
+
+    <label for="estado">Estado:</label>
+    <select name="estado">
+        <option value="Programada">Programada</option>
+        <option value="Completada">Completada</option>
+        <option value="Cancelada">Cancelada</option>
+        <option value="Reprogramada">Reprogramada</option>
+    </select><br>
+
+    <label for="diagnostico">Diagnóstico:</label>
+    <textarea name="diagnostico"></textarea><br>
+
+    <label for="tratamiento">Tratamiento:</label>
+    <textarea name="tratamiento"></textarea><br>
+
+    <label for="idMedico">ID del Médico:</label>
+    <input type="text" name="idMedico" required><br>
+
+    <label for="idPaciente">ID del Paciente:</label>
+    <input type="text" name="idPaciente" required><br>
+
+    <button type="submit">Agregar Consulta</button>
+</form>
+
+{{#if error}}
+    <p style="color:red;">{{error}}</p>
+{{/if}}
+
+{{#if mensaje}}
+    <p style="color:green;">{{mensaje}}</p>
+    <p><strong>Consulta Agregada:</strong></p>
+    <p>ID Paciente: {{consulta.ID_Paciente}}</p>
+    <p>ID Médico: {{consulta.ID_Personal}}</p>
+    <p>Fecha: {{consulta.Fecha}}</p>
+    <p>Hora: {{consulta.Hora}}</p>
+    <p>Motivo: {{consulta.Motivo}}</p>
+    <p>Diagnóstico: {{consulta.Diagnostico}}</p>
+    <p>Tratamiento: {{consulta.Tratamiento}}</p>
+    <p>Estado: {{consulta.Estado}}</p>
+{{/if}}
 
 
 
 
-                <form id="crearProductoForm" class="row g-3" action="/PersonalMedico"  method="POST">
-                        <div class="col-md-6">
-                            <label for="nombrePM" class="form-label">Nombre del Personal Medico </label>
-                            <input type="text" class="form-control" id="nombrePM" name="nombrePM" placeholder="Nombre">   
-                        </div>
-
-                        <div class="col-md-6">
-                            <label for="rutPM" class="form-label">RUT</label>
-                            <input type="text" class="form-control" id="rutPM" name="rutPM" placeholder="RUT">
-                        </div>
-
-                        <div class="col-md-6">
-                            <label for="contactoPM" class="form-label"> Contacto </label>
-                            <input type="text" class="form-control" id="contactoPM" name="contactoPM" placeholder="Numero de contacto">
-                        </div>
-                        
-                        <div class="col-md-6">
-                            <label for="direccionPM" class="form-label">Direccion</label>
-                            <input type="text" class="form-control" id="direccionPM" name="direccionPM" placeholder="direccion del usuario">
-                        </div>
-
-                        <div class="col-md-6">
-                            <label for="numeroDeLicencia" class="form-label"> Numero de licencia</label>
-                            <input type="text" class="form-control" id="numeroDeLicencia" name="numeroDeLicencia" placeholder="Numero de licencia del usuario">
-                        </div>
-
-
-                        <div class="col-md-6">
-                            <label for="numeroDeLicencia" class="form-label"> Especialidad </label>
-                            <select id="numeroDeLicencia" name="numeroDeLicencia">
-                                <option value="enfermero"> Enfermero </option>
-                                <option value="cirujano"> Cirujano </option>
-                                <option value="pediatra"> Pediatra </option>
-                                <option value="general"> General </option>
-                            </select>
-                            
-                        </div>
-        
-                        <div class="col-12">
-                            <button type="submit" class="btn btn-primary">Agregar Producto</button>
-                        </div>
-                </form>
-
-
-                <form id="crearProductoForm" class="row g-3" action="/PersonalMedico"  method="POST">
-                        <div class="col-md-6">
-                            <label for="nombrePM" class="form-label">Nombre del Personal Medico </label>
-                            <input type="text" class="form-control" id="nombrePM" name="nombrePM" placeholder="Nombre">   
-                        </div>
-
-                        <div class="col-md-6">
-                            <label for="rutPM" class="form-label">RUT</label>
-                            <input type="text" class="form-control" id="rutPM" name="rutPM" placeholder="RUT">
-                        </div>
-
-                        <div class="col-md-6">
-                            <label for="contactoPM" class="form-label"> Contacto </label>
-                            <input type="text" class="form-control" id="contactoPM" name="contactoPM" placeholder="Numero de contacto">
-                        </div>
-                        
-                        <div class="col-md-6">
-                            <label for="direccionPM" class="form-label">Direccion</label>
-                            <input type="text" class="form-control" id="direccionPM" name="direccionPM" placeholder="direccion del usuario">
-                        </div>
-
-                        <div class="col-md-6">
-                            <label for="numeroDeLicencia" class="form-label"> Numero de licencia</label>
-                            <input type="text" class="form-control" id="numeroDeLicencia" name="numeroDeLicencia" placeholder="Numero de licencia del usuario">
-                        </div>
-
-
-                        <div class="col-md-6">
-                            <label for="numeroDeLicencia" class="form-label"> Especialidad </label>
-                            <select id="numeroDeLicencia" name="numeroDeLicencia">
-                                <option value="enfermero"> Enfermero </option>
-                                <option value="cirujano"> Cirujano </option>
-                                <option value="pediatra"> Pediatra </option>
-                                <option value="general"> General </option>
-                            </select>
-                            
-                        </div>
-        
-                        <div class="col-12">
-                            <button type="submit" class="btn btn-primary">Agregar Producto</button>
-                        </div>
-                </form>
 
 
 
@@ -284,16 +250,6 @@
                             <button type="submit" class="btn btn-primary">Agregar Producto</button>
                         </div>
                 </form>
-
-
-
-
-
-
-
-
-
-
 
 
             </section>

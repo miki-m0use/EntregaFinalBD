@@ -4,6 +4,7 @@ import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
+
 // Obtener la ruta del archivo actual
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -14,8 +15,9 @@ const sql = neon('postgresql://neondb_owner:TWQn1tsowjC4@ep-patient-art-a4tlr8sa
 const app = express();
 
 //////      middlewares      /////
+
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
 
 
 app.engine('handlebars', engine());
@@ -437,13 +439,13 @@ app.get('/consulta12', async (req, res) => {
 app.get('/consulta13', async (req, res) => {
     const { idPaciente, fechaInicio, fechaFin } = req.query;
 
-    // Verificar si los parámetros fueron proporcionados
+    
     if (!idPaciente || !fechaInicio || !fechaFin) {
         return res.render('consulta13', { error: 'Debe proporcionar el ID del paciente y el rango de fechas' });
     }
 
     try {
-        // Consultar el resumen de las citas del paciente en el periodo especificado
+        
         const query = `
             SELECT 
                 cita_medica.Fecha, 
@@ -463,10 +465,10 @@ app.get('/consulta13', async (req, res) => {
                 cita_medica.Fecha, cita_medica.Hora;
         `;
 
-        // Ejecutar la consulta SQL
+        
         const citas = await sql(query, [idPaciente, fechaInicio, fechaFin]);
 
-        // Renderizar la vista con los resultados
+        
         res.render('consulta13', { citas, idPaciente, fechaInicio, fechaFin });
         console.log('citas', citas)
 
@@ -500,8 +502,120 @@ app.get('/consulta14', async (req, res) => {
 });
 
 
-app.get('/consulta15', (req, res) =>{
-    res.render('consulta15')
-})
+app.get('/consulta15', async (req, res) => {
+    try {
+        const query = `
+            SELECT 
+                Nombre, 
+                Fecha_Nacimiento
+            FROM 
+                Paciente;
+        `;
+
+        const pacientes = await sql(query);
+
+        res.render('consulta15', { pacientes });
+        console.log('pacientes', pacientes)
+
+    } catch (error) {
+        console.error('Error al obtener la lista de pacientes:', error);
+        res.render('consulta15', { error: 'Ocurrió un error al obtener la lista de pacientes.' });
+    }
+});
+
+
+
+///////////////////////// Funcicones para ingresar pacientes, medicos, citas y 
+
+app.post('/agregarPaciente', async (req, res) => {
+    const { nombre, rut, genero, contacto, direccion, numeroSeguro, fechaNacimiento } = req.body;
+
+    
+    if (!nombre || !rut || !genero || !numeroSeguro) {
+        return res.render('administracion', { error: 'Los campos Nombre, RUT, Género y Número de Seguro son obligatorios.' });
+    }
+
+    try {
+        
+        const query = `
+            INSERT INTO Paciente (Nombre, RUT, Genero, Contacto, Direccion, Numero_Seguro, Fecha_Nacimiento)
+            VALUES ($1, $2, $3, $4, $5, $6, $7);
+        `;
+
+        
+        await sql(query, [nombre, rut, genero, contacto, direccion, numeroSeguro, fechaNacimiento]);
+
+        
+        res.redirect('/administracion');  
+
+    } catch (error) {
+        console.error('Error al agregar el paciente:', error);
+        res.render('administracion', { error: 'Ocurrió un error al agregar el paciente.' });
+    }
+});
+
+
+app.post('/agregarMedico', async (req, res) => {
+    const { nombre, rut, contacto, direccion, numeroLicencia, especialidad, idDepartamento } = req.body;
+
+    
+    if (!nombre || !rut || !numeroLicencia || !especialidad || !idDepartamento) {
+        return res.render('administracion', { error: 'Los campos Nombre, RUT, Número de Licencia, Especialidad y ID de Departamento son obligatorios.' });
+    }
+
+    try {
+        
+        const query = `
+            INSERT INTO Personal_Medico (Nombre, RUT, Contacto, Direccion, Numero_Licencia, Especialidad, ID_Departamento)
+            VALUES ($1, $2, $3, $4, $5, $6, $7);
+        `;
+
+        
+        await sql(query, [nombre, rut, contacto, direccion, numeroLicencia, especialidad, idDepartamento]);
+
+        
+        res.redirect('/administracion');  
+
+    } catch (error) {
+        console.error('Error al agregar el médico:', error);
+        res.render('administracion', { error: 'Ocurrió un error al agregar el médico.' });
+    }
+});
+
+
+
+app.post('/agregar-consulta', async (req, res) => {
+    const { fecha, hora, motivo, estado, diagnostico, tratamiento, idMedico, idPaciente } = req.body;
+
+    
+    if (!fecha || !hora || !motivo || !idMedico || !idPaciente) {
+        return res.render('administracion', { error: 'Todos los campos son obligatorios.' });
+    }
+
+    try {
+        const query = `
+            INSERT INTO Cita_Medica (Fecha, Hora, Motivo, Estado, Diagnostico, Tratamiento, ID_Personal, ID_Paciente)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+            RETURNING *;
+        `;
+
+        
+        const nuevaConsulta = await sql(query, [fecha, hora, motivo, estado || 'Programada', diagnostico || null, tratamiento || null, idMedico, idPaciente]);
+
+        
+        res.render('administracion', { mensaje: 'Consulta agregada con éxito', consulta: nuevaConsulta[0] });
+    } catch (error) {
+        console.error('Error al agregar la consulta:', error);
+        res.render('administracion', { error: 'Ocurrió un error al agregar la consulta.' });
+    }
+});
+
+
+
+
+
+
+
+
 
 app.listen(3000 , () => console.log('tuki'));

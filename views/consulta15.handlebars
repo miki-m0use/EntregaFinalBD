@@ -1,19 +1,33 @@
 <main>
-    <h2 class="Titulos-categorias"> Todos los resultados </h2>
+    <h2 class="Titulos-categorias"> Lista de pacientes y sus fechas de nacimiento </h2>
 
 
 
-    <div class="container mt-4">
-        <div class="row">
-            
+    {{#if error}}
+        <div class="error">{{error}}</div>
+    {{/if}}
 
-
-
-
-
-
-        </div>
-    </div>
+    <!-- Tabla con la lista de pacientes y sus fechas de nacimiento -->
+    {{#if pacientes}}
+        <table>
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Fecha de Nacimiento</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each pacientes}}
+                    <tr>
+                        <td>{{this.nombre}}</td>
+                        <td>{{this.fecha_nacimiento}}</td>
+                    </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    {{else}}
+        <p>No se encontraron pacientes.</p>
+    {{/if}}
 
 
 </main>
